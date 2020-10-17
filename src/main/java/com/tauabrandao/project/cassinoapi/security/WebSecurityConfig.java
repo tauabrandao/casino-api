@@ -11,21 +11,23 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private static final String LOGIN_PATH = "/authenticate";
-	private static final String API_DOCS_PATH = "/v2/api-docs";
-	private static final String UI_CONFIGURATION_PATH = "/configuration/ui";
-	private static final String SWAGGER_RESOURCES = "/swagger-resources/**";
-	private static final String CONFIGURATION = "/configuration/**";
-	private static final String SWAGGER_UI_HTML = "/swagger-ui.html";
-	private static final String WEBJARS = "/webjars/**";
+	private final String AUTH_POINT = "/authenticate";
+	private final String OPEN_GAME = "/openGame";
+	private final String API_DOCS_PATH = "/v2/api-docs";
+	private final String UI_CONFIGURATION_PATH = "/configuration/ui";
+	private final String SWAGGER_RESOURCES = "/swagger-resources/**";
+	private final String CONFIGURATION = "/configuration/**";
+	private final String SWAGGER_UI_HTML = "/swagger-ui.html";
+	private final String WEBJARS = "/webjars/**";
+	private final String NEW_PLAYER = "/player/new";
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf().disable().authorizeRequests()
-				.antMatchers(LOGIN_PATH, API_DOCS_PATH, UI_CONFIGURATION_PATH, SWAGGER_RESOURCES, CONFIGURATION,
+				.antMatchers(NEW_PLAYER, OPEN_GAME, AUTH_POINT, API_DOCS_PATH, UI_CONFIGURATION_PATH, SWAGGER_RESOURCES, CONFIGURATION,
 						SWAGGER_UI_HTML, WEBJARS)
 				.permitAll().anyRequest().authenticated().and()
-				.addFilterBefore(new JWTLoginFilter(LOGIN_PATH, authenticationManager()),
+				.addFilterBefore(new JWTLoginFilter(AUTH_POINT, authenticationManager()),
 						UsernamePasswordAuthenticationFilter.class)
 
 				.addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
