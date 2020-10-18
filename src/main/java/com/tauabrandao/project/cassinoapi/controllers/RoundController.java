@@ -10,7 +10,13 @@ import com.tauabrandao.project.cassinoapi.model.Round;
 import com.tauabrandao.project.cassinoapi.service.RoundService;
 import com.tauabrandao.project.cassinoapi.util.ProcessSimulator;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
+@Api(value = "Round Controller")
 public class RoundController {
 
 	@Autowired
@@ -20,6 +26,9 @@ public class RoundController {
 	private RoundService roundService;
 	
 	@GetMapping("/round/start")
+	@ApiOperation(value = "Start a new round")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header") })
 	public ResponseEntity<Object> startRound(){
 		
 		try {

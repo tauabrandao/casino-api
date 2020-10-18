@@ -31,7 +31,13 @@ import com.tauabrandao.project.cassinoapi.service.RoundService;
 import com.tauabrandao.project.cassinoapi.service.SessionIdentifierService;
 import com.tauabrandao.project.cassinoapi.util.ProcessSimulator;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
+@Api(value = "Game Controller")
 public class GameController {
 
 	@Autowired
@@ -62,6 +68,7 @@ public class GameController {
 	private BetService betService;
 
 	@PostMapping("/game/open")
+	@ApiOperation(value = "Open a new Game")
 	private ResponseEntity<Object> openGame(@RequestBody OpenGameDTO dto) {
 
 		try {
@@ -82,6 +89,9 @@ public class GameController {
 	}
 
 	@PostMapping("/game/play")
+	@ApiOperation(value = "Simulate a round")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header") })
 	public ResponseEntity<Object> playGame(@RequestBody PlayGameDTO dto) {
 		try {
 			Optional<Player> player = playerService.findById(dto.getPlayerId());

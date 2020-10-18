@@ -24,7 +24,13 @@ import com.tauabrandao.project.cassinoapi.service.AccountService;
 import com.tauabrandao.project.cassinoapi.service.PlayerService;
 import com.tauabrandao.project.cassinoapi.util.ProcessSimulator;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
+@Api(value = "Player Controller")
 public class PlayerController {
 
 	@Autowired
@@ -40,6 +46,7 @@ public class PlayerController {
 	private DefaultConstants constants;
 
 	@PostMapping("/player/new")
+	@ApiOperation(value = "Create a new Player")
 	public ResponseEntity<Object> createPlayer(@RequestBody final NewPlayerDTO playerDTO) {
 		try {
 			playerService.validatePlayerEmail(playerDTO.getEmail());
@@ -61,6 +68,9 @@ public class PlayerController {
 	}
 
 	@GetMapping("/player/{playerId}")
+	@ApiOperation(value = "Get Player Details")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header") })
 	public ResponseEntity<Object> getPlayerDetails(@PathVariable("playerId") String playerId) {
 
 		if (!playerService.existsById(Long.parseLong(playerId))) {
