@@ -8,9 +8,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import com.tauabrandao.project.cassinoapi.enums.Gender;
 
@@ -32,11 +32,12 @@ public class Player {
 	private Long id;
 	@NotNull
 	private String name;
-	
+
 	@NotNull
 	private String email;
-	
+
 	@NotNull
+	@JsonIgnore
 	private String password;
 
 	private LocalDate dateOfBirth;
@@ -44,7 +45,4 @@ public class Player {
 	@Enumerated(value = EnumType.STRING)
 	private Gender gender;
 
-	@NotNull
-	@OneToOne
-	private Account account;
 }

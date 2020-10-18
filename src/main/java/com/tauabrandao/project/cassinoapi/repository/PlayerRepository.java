@@ -8,4 +8,8 @@ public interface PlayerRepository extends CrudRepository<Player, Long>{
 
 	boolean existsByEmail(String email);
 	
+	boolean existsById(Long id);
+	
+	Player findByEmail(String email);
+	
 }

@@ -2,16 +2,20 @@ package com.tauabrandao.project.cassinoapi.controllers;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tauabrandao.project.cassinoapi.dto.PlayerDTO;
+import com.tauabrandao.project.cassinoapi.constants.DefaultConstants;
+import com.tauabrandao.project.cassinoapi.dto.FullPlayerDataDTO;
+import com.tauabrandao.project.cassinoapi.dto.NewPlayerDTO;
 import com.tauabrandao.project.cassinoapi.enums.Gender;
 import com.tauabrandao.project.cassinoapi.exception.BusinessRuleException;
 import com.tauabrandao.project.cassinoapi.model.Account;
@@ -23,44 +27,62 @@ import com.tauabrandao.project.cassinoapi.util.ProcessSimulator;
 @RestController
 public class PlayerController {
 
-	@Value("${cassinoapi.message.dateParseErrorMessage}")
-	private String DATE_PARSER_ERROR_MESSAGE;
+	@Autowired
+	private ProcessSimulator processSimulator;
 
 	@Autowired
-	ProcessSimulator processSimulator;
+	private AccountService accountService;
 
 	@Autowired
-	AccountService accountService;
-
+	private PlayerService playerService;
+	
 	@Autowired
-	PlayerService playerService;
+	private DefaultConstants constants;
 
 	@PostMapping("/player/new")
-	public ResponseEntity<Object> createPlayer(@RequestBody final PlayerDTO playerDTO) {
+	public ResponseEntity<Object> createPlayer(@RequestBody final NewPlayerDTO playerDTO) {
 		try {
 			playerService.validatePlayerEmail(playerDTO.getEmail());
-			Account account = generateAndSaveNewAccount();
-			return new ResponseEntity<Object>(playerService.save(extractPlayerFromDTO(playerDTO, account)),
-					HttpStatus.CREATED);
+			Player player = generateAndSavePlayer(playerDTO);
+			generateAndSaveNewAccount(player);
+			return new ResponseEntity<Object>(player, HttpStatus.CREATED);
 		} catch (BusinessRuleException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		} catch (DateTimeParseException e) {
-			return ResponseEntity.badRequest().body(DATE_PARSER_ERROR_MESSAGE);
+			return ResponseEntity.badRequest().body(constants.DATE_PARSER_ERROR_MESSAGE);
 		}
 	}
 
-	private Account generateAndSaveNewAccount() {
-		Account account = processSimulator.generateAccount();
+	private Player generateAndSavePlayer(final NewPlayerDTO playerDTO) {
+		Player player = playerService.save(extractPlayerFromDTO(playerDTO));
+		playerService.save(player);
+		return player;
+	}
+
+	@GetMapping("/player/{playerId}")
+	public ResponseEntity<Object> getPlayerDetails(@PathVariable("playerId") String playerId) {
+
+		if (!playerService.existsById(Long.parseLong(playerId))) {
+			return ResponseEntity.badRequest().body(constants.PLAYER_DOES_NOT_EXIST_EXCEPTION_MESSAGE);
+
+		}
+		FullPlayerDataDTO playerData = playerService.getFullPlayerDataByPlayerId(Long.parseLong(playerId));
+		return new ResponseEntity<Object>(playerData, HttpStatus.OK);
+
+	}
+
+	private Account generateAndSaveNewAccount(Player player) {
+		Account account = processSimulator.generateAccount(player);
 		accountService.save(account);
 		return account;
 	}
 
-	private Player extractPlayerFromDTO(final PlayerDTO dto, final Account account) {
-		return Player.builder().name(dto.getName()).email(dto.getEmail()).password(dto.getPassword()).account(account)
+	private Player extractPlayerFromDTO(final NewPlayerDTO dto) {
+		return Player.builder().name(dto.getName()).email(dto.getEmail()).password(dto.getPassword())
 				.dateOfBirth(LocalDate.parse(dto.getDateOfBirth())).gender(getGenderFromDTO(dto)).build();
 	}
 
-	private Gender getGenderFromDTO(final PlayerDTO dto) {
+	private Gender getGenderFromDTO(final NewPlayerDTO dto) {
 		Gender gender;
 		if (Gender.MALE.toString().equals(dto.getGender())) {
 			gender = Gender.MALE;
