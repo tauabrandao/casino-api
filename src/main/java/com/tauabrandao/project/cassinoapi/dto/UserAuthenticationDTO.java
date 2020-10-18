@@ -1,4 +1,4 @@
-package com.tauabrandao.project.cassinoapi.security.dto;
+package com.tauabrandao.project.cassinoapi.dto;
 
 import lombok.Builder;
 import lombok.Getter;
