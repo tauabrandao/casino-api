@@ -1,5 +1,7 @@
 package com.tauabrandao.project.cassinoapi.service.impl;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,11 @@ public class RoundServiceImpl implements RoundService {
 	@Override
 	public Round save(Round round) {
 		return repository.save(round);
+	}
+
+	@Override
+	public Optional<Round> findById(Long id) {
+		return repository.findById(id);
 	}
 
 	

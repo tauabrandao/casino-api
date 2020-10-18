@@ -29,8 +29,6 @@ public class Round {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@OneToMany
-	private List<Bet> bets;
 	
 	
 }

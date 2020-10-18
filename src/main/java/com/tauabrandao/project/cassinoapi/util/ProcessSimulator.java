@@ -1,5 +1,6 @@
 package com.tauabrandao.project.cassinoapi.util;
 
+import java.security.SecureRandom;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,12 @@ public class ProcessSimulator {
 		return cassino.isPresent() ? cassino.get() : Cassino.builder().name(cassinoName).build();
 	}
 
+	public boolean roundWins() {
+		SecureRandom r = new SecureRandom();
+		int i = r.nextInt(100);
+		return i > 50;
+	}
+	
 	private long generateId() {
 		return System.currentTimeMillis();
 	}
