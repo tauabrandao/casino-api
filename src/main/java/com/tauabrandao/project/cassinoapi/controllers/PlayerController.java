@@ -43,8 +43,10 @@ public class PlayerController {
 	public ResponseEntity<Object> createPlayer(@RequestBody final NewPlayerDTO playerDTO) {
 		try {
 			playerService.validatePlayerEmail(playerDTO.getEmail());
-			Player player = generateAndSavePlayer(playerDTO);
-			generateAndSaveNewAccount(player);
+			Player player = generatePlayer(playerDTO);
+			Account account = generateAndSaveNewAccount(player);
+			player.setAccount(account);
+			playerService.save(player);
 			return new ResponseEntity<Object>(player, HttpStatus.CREATED);
 		} catch (BusinessRuleException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -53,10 +55,9 @@ public class PlayerController {
 		}
 	}
 
-	private Player generateAndSavePlayer(final NewPlayerDTO playerDTO) {
-		Player player = playerService.save(extractPlayerFromDTO(playerDTO));
-		playerService.save(player);
-		return player;
+	private Player generatePlayer(final NewPlayerDTO playerDTO) {
+		
+		return playerService.save(extractPlayerFromDTO(playerDTO));
 	}
 
 	@GetMapping("/player/{playerId}")

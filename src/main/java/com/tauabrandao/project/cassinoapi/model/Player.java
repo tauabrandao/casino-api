@@ -8,6 +8,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -44,5 +45,10 @@ public class Player {
 
 	@Enumerated(value = EnumType.STRING)
 	private Gender gender;
+	
+	@NotNull
+	@OneToOne
+	@JsonIgnore
+	private Account account;
 
 }
