@@ -69,7 +69,7 @@ public class GameController {
 
 	@PostMapping("/game/open")
 	@ApiOperation(value = "Open a new Game")
-	private ResponseEntity<Object> openGame(@RequestBody OpenGameDTO dto) {
+	public ResponseEntity<Object> openGame(@RequestBody OpenGameDTO dto) {
 
 		try {
 			Optional<Player> player = findPlayerById(dto);
