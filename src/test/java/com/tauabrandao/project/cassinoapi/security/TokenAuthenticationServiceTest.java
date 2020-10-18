@@ -11,11 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 
-import com.google.gson.Gson;
 import com.tauabrandao.project.cassinoapi.CassinoapiApplication;
 import com.tauabrandao.project.cassinoapi.dto.IdentifierDTO;
 import com.tauabrandao.project.cassinoapi.dto.NewPlayerDTO;
